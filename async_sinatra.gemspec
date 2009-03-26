@@ -1,33 +1,43 @@
+# -*- encoding: utf-8 -*-
+
 Gem::Specification.new do |s|
-  s.specification_version = 2 if s.respond_to? :specification_version=
+  s.name = %q{async_sinatra}
+  s.version = "0.1.0"
+
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-
-  s.name = 'async_sinatra'
-  s.version = '0.1.0'
-  s.date = '2009-03-24'
-
-  s.description = "Asynchronous response API for Sinatra and Thin"
-  s.summary     = s.description
-
   s.authors = ["James Tucker"]
-  s.email = "raggi@rubyforge.org"
-
-  s.files = %w[]
-
-  s.test_files = s.files.select {|path| path =~ /^spec\/spec_.*\.rb/}
-
-  s.extra_rdoc_files = %w[README.rdoc]
-  
-  s.add_dependency 'sinatra',    '>= 0.9.1'
-  s.add_dependency 'thin',       '>= 1.2.0'
-  
-  s.add_development_dependency 'rdoc', '>= 2.4.1'
-  s.add_development_dependency 'rake', '>= 0.8.3'
-
+  s.date = %q{2009-03-24}
+  s.description = %q{Asynchronous response API for Sinatra and Thin}
+  s.email = %q{raggi@rubyforge.org}
+  s.extra_rdoc_files = ["README.rdoc"]
+  s.files = ["README.rdoc", "Rakefile", "examples/basic.ru", "lib/sinatra/async.rb"]
   s.has_rdoc = true
-  s.homepage = "http://libraggi.rubyforge.org/async_sinatra"
+  s.homepage = %q{http://libraggi.rubyforge.org/async_sinatra}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Async Sinatra", "--main", "README.rdoc"]
-  s.require_paths = %w[lib]
-  s.rubyforge_project = 'libraggi'
-  s.rubygems_version = '1.3.1'
+  s.require_paths = ["lib"]
+  s.rubyforge_project = %q{libraggi}
+  s.rubygems_version = %q{1.3.1}
+  s.summary = %q{Asynchronous response API for Sinatra and Thin}
+
+  if s.respond_to? :specification_version then
+    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
+    s.specification_version = 2
+
+    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<sinatra>, [">= 0.9.1"])
+      s.add_runtime_dependency(%q<thin>, [">= 1.2.0"])
+      s.add_development_dependency(%q<rdoc>, [">= 2.4.1"])
+      s.add_development_dependency(%q<rake>, [">= 0.8.3"])
+    else
+      s.add_dependency(%q<sinatra>, [">= 0.9.1"])
+      s.add_dependency(%q<thin>, [">= 1.2.0"])
+      s.add_dependency(%q<rdoc>, [">= 2.4.1"])
+      s.add_dependency(%q<rake>, [">= 0.8.3"])
+    end
+  else
+    s.add_dependency(%q<sinatra>, [">= 0.9.1"])
+    s.add_dependency(%q<thin>, [">= 1.2.0"])
+    s.add_dependency(%q<rdoc>, [">= 2.4.1"])
+    s.add_dependency(%q<rake>, [">= 0.8.3"])
+  end
 end

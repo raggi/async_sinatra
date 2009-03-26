@@ -15,7 +15,7 @@ def spec(file = Dir['*.gemspec'].first)
   end
 end
 
-def manifest; @manifest ||= `git ls-files`.split("\n"); end
+def manifest; @manifest ||= `git ls-files`.split("\n").reject{|s|s=~/\.gemspec$|\.gitignore$/}; end
 
 require 'rake/gempackagetask'
 def gem_task; @gem_task ||= Rake::GemPackageTask.new(spec); end
