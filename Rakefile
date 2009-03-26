@@ -45,7 +45,7 @@ end
 Rake::Task[:clobber].enhance [:clobber_rdoc]
 
 require 'yaml'
-require 'rake/contrib/rubyforgepublisher'
+require 'rake/contrib/sshpublisher'
 desc "Publish rdoc to rubyforge"
 task :publish => rdtask.name do
   rf_cfg = File.expand_path '~/.rubyforge/user-config.yml'
@@ -91,6 +91,6 @@ task :tag do
 end
 
 desc "Release #{gem_task.gem_file} to rubyforge"
-task :release => [:tag, gem_task.gem_file, :publish] do |t|
+task :release => [:tag, :gem, :publish] do |t|
   sh "rubyforge add_release #{spec.rubyforge_project} #{spec.name} #{spec.version} #{gem_task.gem_file}"
 end
