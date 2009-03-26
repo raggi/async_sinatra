@@ -60,7 +60,9 @@ task :docs => :rdoc do
 end
 
 desc "Regenerate gemspec"
-file spec.filename => FileList[*manifest] do
+task :gemspec => spec.filename
+
+task spec.filename do
   spec.files = manifest
   spec.test_files = manifest.grep(/(?:spec|test)\/*.rb/)
   open(spec.filename, 'w') { |w| w.write spec.to_ruby }
