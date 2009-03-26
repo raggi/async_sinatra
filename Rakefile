@@ -1,4 +1,6 @@
 #!/usr/bin/env rake
+require 'rake/clean'
+
 task :default => :spec
 
 def spec(file = Dir['*.gemspec'].first)
@@ -20,6 +22,7 @@ def manifest; @manifest ||= `git ls-files`.split("\n").reject{|s|s=~/\.gemspec$|
 require 'rake/gempackagetask'
 def gem_task; @gem_task ||= Rake::GemPackageTask.new(spec); end
 gem_task.define
+Rake::Task[:clobber].enhance [:clobber_package]
 
 require 'rake/testtask'
 Rake::TestTask.new(:spec) do |t|
@@ -36,6 +39,7 @@ rdtask = Rake::RDocTask.new do |rd|
   rd.rdoc_files.include(manifest.grep(/\.rb$|\.rdoc$/), *spec.extra_rdoc_files)
   rd.template = 'darkfish' if df
 end
+
 Rake::Task[:clobber].enhance [:clobber_rdoc]
 
 require 'yaml'
@@ -85,6 +89,6 @@ task :tag do
 end
 
 desc "Release #{gem_task.gem_file} to rubyforge"
-task :release => [:tag, gem_task.gem_file] do |t|
+task :release => [:tag, gem_task.gem_file, :publish] do |t|
   sh "rubyforge add_release #{spec.rubyforge_project} #{spec.name} #{spec.version} #{gem_task.gem_file}"
 end
