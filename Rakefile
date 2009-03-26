@@ -36,7 +36,9 @@ df = begin; require 'rdoc/generator/darkfish'; true; rescue LoadError; end
 rdtask = Rake::RDocTask.new do |rd|
   rd.title = spec.name
   rd.main = spec.extra_rdoc_files.first
-  rd.rdoc_files.include(*[manifest.grep(/\.rb$|\.rdoc$/), *spec.extra_rdoc_files].uniq)
+  lib_rexp = spec.require_paths.map { |p| Regexp.escape p }.join('|')
+  rd.rdoc_files.include(*manifest.grep(/^(?:#{lib_rexp})/))
+  rd.rdoc_files.include(*spec.extra_rdoc_files)
   rd.template = 'darkfish' if df
 end
 

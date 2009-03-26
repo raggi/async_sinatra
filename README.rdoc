@@ -14,6 +14,8 @@ asynchronous patterns is recommended.
 
 == SYNOPSIS:
 
+A quick example:
+
  require 'sinatra/async'
 
  class AsyncTest < Sinatra::Base
@@ -28,6 +30,8 @@ asynchronous patterns is recommended.
    end
 
  end
+
+See Sinatra::Async for more details.
 
 == REQUIREMENTS:
 
