@@ -38,14 +38,14 @@ rdtask = Rake::RDocTask.new do |rd|
 end
 Rake::Task[:clobber].enhance [:clobber_rdoc]
 
-require 'etc'
+require 'yaml'
 require 'rake/contrib/rubyforgepublisher'
 desc "Publish rdoc to rubyforge"
 task :publish => rdtask.name do
-  pub = Rake::RubyForgePublisher.new(
-    "#{spec.rubyforge_project}/#{spec.name}", Etc.getlogin
-  )
-  pub.upload
+  rf_cfg = File.expand_path '~/.rubyforge/user-config.yml'
+  host = "#{YAML.load_file(rf_cfg)['username']}@rubyforge.org"
+  remote_dir = "/var/www/gforge-projects/#{spec.rubyforge_project}/#{spec.name}/"
+  Rake::SshDirPublisher.new(host, remote_dir, rdtask.rdoc_dir).upload
 end
 
 desc 'Generate and open documentation'
