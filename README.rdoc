@@ -1,0 +1,21 @@
+= Async Sinatra (for Thin)
+
+A plugin to provide convenience whilst performing asynchronous responses 
+inside of the sinatra framework.
+
+=== Example
+
+ require 'sinatra/async'
+
+ class AsyncTest < Sinatra::Base
+   include Sinatra::Async
+
+   aget '/' do
+     body "hello async"
+   end
+
+   aget '/delay/:n' do |n|
+     EM.add_timer(n.to_i) { body { "delayed for #{n} seconds" } }
+   end
+
+ end
