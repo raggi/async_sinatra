@@ -92,5 +92,5 @@ end
 
 desc "Release #{gem_task.gem_file} to rubyforge"
 task :release => [:tag, :gem, :publish] do |t|
-  sh "rubyforge add_release #{spec.rubyforge_project} #{spec.name} #{spec.version} #{gem_task.gem_file}"
+  sh "rubyforge add_release #{spec.rubyforge_project} #{spec.name} #{spec.version} #{gem_task.package_dir}/#{gem_task.gem_file}"
 end
