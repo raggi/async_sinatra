@@ -81,7 +81,7 @@ end
 
 desc "Tag version #{spec.version}"
 task :tag do
-  tagged = Dir['.git/refs/tags/*'].include? spec.version
+  tagged = Dir.new('.git/refs/tags').entries.include? spec.version.to_s
   if tagged
     warn "Tag #{spec.version} already exists"
   else
