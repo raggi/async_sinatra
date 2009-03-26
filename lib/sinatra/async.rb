@@ -1,3 +1,5 @@
+require 'sinatra'
+
 # Normally Sinatra::Base expects that the completion of a request is 
 # determined by the block exiting, and returning a value for the body.
 #
