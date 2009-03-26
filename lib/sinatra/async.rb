@@ -1,11 +1,9 @@
-require 'sinatra'
+require 'sinatra/base'
 
 module Sinatra #:nodoc:
 
-  # See Async::ClassMethods for the DSL
-  #
-  # Normally Sinatra::Base expects that the completion of a request is 
-  # determined by the block exiting, and returning a value for the body.
+  # Normally Sinatra expects that the completion of a request is # determined
+  # by the block exiting, and returning a value for the body.
   #
   # In an async environment, we want to tell the webserver that we're not going
   # to provide a response now, but some time in the future.
@@ -25,7 +23,7 @@ module Sinatra #:nodoc:
   #  require 'sinatra/async'
   #  
   #  class AsyncTest < Sinatra::Base
-  #    include Sinatra::Async
+  #    register Sinatra::Async
   #  
   #    aget '/' do
   #      body "hello async"
@@ -37,50 +35,50 @@ module Sinatra #:nodoc:
   #  
   #  end
   module Async
-    module ClassMethods
-      # Similar to Sinatra::Base#get, but the block will be scheduled to run
-      # during the next tick of the EventMachine reactor. In the meantime,
-      # Thin will hold onto the client connection, awaiting a call to 
-      # Async#body with the response.
-      def aget(path, opts={}, &block)
-        conditions = @conditions.dup
-        aroute('GET', path, opts, &block)
+    # Similar to Sinatra::Base#get, but the block will be scheduled to run
+    # during the next tick of the EventMachine reactor. In the meantime,
+    # Thin will hold onto the client connection, awaiting a call to 
+    # Async#body with the response.
+    def aget(path, opts={}, &block)
+      conditions = @conditions.dup
+      aroute('GET', path, opts, &block)
 
-        @conditions = conditions
-        aroute('HEAD', path, opts, &block)
-      end
+      @conditions = conditions
+      aroute('HEAD', path, opts, &block)
+    end
 
-      # See #aget.
-      def aput(path, opts={}, &bk); aroute 'PUT', path, opts, &bk; end
-      # See #aget.
-      def apost(path, opts={}, &bk); aroute 'POST', path, opts, &bk; end
-      # See #aget.
-      def adelete(path, opts={}, &bk); aroute 'DELETE', path, opts, &bk; end
-      # See #aget.
-      def ahead(path, opts={}, &bk); aroute 'HEAD', path, opts, &bk; end
+    # See #aget.
+    def aput(path, opts={}, &bk); aroute 'PUT', path, opts, &bk; end
+    # See #aget.
+    def apost(path, opts={}, &bk); aroute 'POST', path, opts, &bk; end
+    # See #aget.
+    def adelete(path, opts={}, &bk); aroute 'DELETE', path, opts, &bk; end
+    # See #aget.
+    def ahead(path, opts={}, &bk); aroute 'HEAD', path, opts, &bk; end
 
-      private
-      def aroute(*args, &block) #:nodoc:
-        self.send :route, *args do |*bargs|
-          mc = class << self; self; end
-          mc.send :define_method, :__async_callback, &block
-          EM.next_tick { send(:__async_callback, *bargs) }
-          throw :async      
-        end
+    private
+    def aroute(*args, &block) #:nodoc:
+      self.send :route, *args do |*bargs|
+        mc = class << self; self; end
+        mc.send :define_method, :__async_callback, &block
+        EM.next_tick { send(:__async_callback, *bargs) }
+        throw :async      
       end
     end
 
-    def self.included(klass) #:nodoc:
-      klass.extend ClassMethods
+    module Helpers
+      # Send the given body or block as the final response to the asynchronous 
+      # request.
+      def body(*args, &blk)
+        super
+        request.env['async.callback'][
+          [response.status, response.headers, response.body]
+        ] if respond_to?(:__async_callback)
+      end
     end
 
-    # Send the given body or block as the final response to the asynchronous 
-    # request.
-    def body(*args, &blk)
-      super
-      request.env['async.callback'][
-        [response.status, response.headers, response.body]
-      ] if respond_to?(:__async_callback)
+    def self.registered(app) #:nodoc:
+      app.helpers Helpers
     end
   end
 end

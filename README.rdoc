@@ -19,7 +19,7 @@ A quick example:
  require 'sinatra/async'
 
  class AsyncTest < Sinatra::Base
-   include Sinatra::Async
+   register Sinatra::Async
 
    aget '/' do
      body "hello async"

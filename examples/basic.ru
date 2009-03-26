@@ -1,9 +1,8 @@
 #!/usr/bin/env rackup -Ilib:../lib -s thin
-require 'sinatra'
 require 'sinatra/async'
 
 class AsyncTest < Sinatra::Base
-  include Sinatra::Async
+  register Sinatra::Async
 
   aget '/' do
     body "hello async"
