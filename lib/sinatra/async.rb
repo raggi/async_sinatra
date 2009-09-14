@@ -57,11 +57,32 @@ module Sinatra #:nodoc:
     def ahead(path, opts={}, &bk); aroute 'HEAD', path, opts, &bk; end
 
     private
-    def aroute(*args, &block) #:nodoc:
-      self.send :route, *args do |*bargs|
+    def aroute(verb, path, opts = {}, &block) #:nodoc:
+      route(verb, path, opts) do |*bargs|
+        method = "A#{verb} #{path}".to_sym
+
         mc = class << self; self; end
-        mc.send :define_method, :__async_callback, &block
-        EM.next_tick { send(:__async_callback, *bargs) }
+        mc.send :define_method, method, &block
+        mc.send :alias_method, :__async_callback, method
+
+        EM.next_tick {
+          begin
+            send(:__async_callback, *bargs)
+          rescue ::Exception => boom
+            if options.show_exceptions?
+              # HACK: handle_exception! re-raises the exception if show_exceptions?,
+              # so we ignore any errors and instead create a ShowExceptions page manually
+              handle_exception!(boom) rescue nil
+              s, h, b = Sinatra::ShowExceptions.new(proc{ raise boom }).call(request.env)
+              response.status = s
+              response.headers.replace(h)
+              body(b)
+            else
+              body(handle_exception!(boom))
+            end
+          end
+        }
+
         throw :async      
       end
     end
