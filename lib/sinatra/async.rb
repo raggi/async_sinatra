@@ -124,6 +124,13 @@ module Sinatra #:nodoc:
           end
         end
       end
+      
+      # Asynchronous halt must be used when the halt is occuring outside of
+      # the original call stack.
+      def ahalt(*args)
+        invoke { halt *args }
+        body response.body
+      end
     end
 
     def self.registered(app) #:nodoc:

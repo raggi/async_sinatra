@@ -30,7 +30,11 @@ class TestSinatraAsync < Test::Unit::TestCase
     end
 
     aget '/302' do
-      halt 302
+      ahalt 302
+    end
+    
+    aget '/em_halt' do
+      EM.next_tick { ahalt 404 }
     end
   end
 
@@ -74,5 +78,12 @@ class TestSinatraAsync < Test::Unit::TestCase
     assert_async
     async_continue
     assert_equal 302, last_response.status
+  end
+  
+  def test_em_halt
+    get '/em_halt'
+    assert_async
+    em_async_continue
+    assert_equal 404, last_response.status
   end
 end
