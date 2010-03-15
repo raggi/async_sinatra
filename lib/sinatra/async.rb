@@ -36,7 +36,7 @@ module Sinatra #:nodoc:
   #  end
   module Async
     autoload :Test, 'sinatra/async/test'
-    
+
     # Similar to Sinatra::Base#get, but the block will be scheduled to run
     # during the next tick of the EventMachine reactor. In the meantime,
     # Thin will hold onto the client connection, awaiting a call to 
@@ -107,7 +107,8 @@ module Sinatra #:nodoc:
             h = catch(:halt) { __send__(method, *bargs); nil }
             if h
               invoke { halt h }
-              body response.body
+              invoke { error_block! response.status }
+              body(response.body)
             end
           rescue ::Exception => boom
             if options.show_exceptions?
@@ -124,11 +125,12 @@ module Sinatra #:nodoc:
           end
         end
       end
-      
+
       # Asynchronous halt must be used when the halt is occuring outside of
       # the original call stack.
       def ahalt(*args)
         invoke { halt *args }
+        invoke { error_block! response.status }
         body response.body
       end
     end

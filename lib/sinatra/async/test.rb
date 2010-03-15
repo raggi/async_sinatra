@@ -13,7 +13,7 @@ class Sinatra::Async::Test
       env['async.close'] = lambda { raise 'close connection' } # XXX deal with this
       catch(:async) { super }
       @last_response ||= Rack::MockResponse.new(-1, {}, [], env["rack.errors"].flush)
-    end  
+    end
 
     def handle_last_response(uri, env, status, headers, body)
       @last_response = Rack::MockResponse.new(status, headers, body, env["rack.errors"].flush)

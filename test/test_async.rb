@@ -13,6 +13,10 @@ class TestSinatraAsync < Test::Unit::TestCase
     set :environment, :test
     register Sinatra::Async
 
+    error 401 do
+      '401'
+    end
+
     aget '/hello' do
       body { 'hello async' }
     end
@@ -32,9 +36,17 @@ class TestSinatraAsync < Test::Unit::TestCase
     aget '/302' do
       ahalt 302
     end
-    
+
     aget '/em_halt' do
       EM.next_tick { ahalt 404 }
+    end
+
+    aget '/s401' do
+      halt 401
+    end
+
+    aget '/a401' do
+      ahalt 401
     end
   end
 
@@ -79,11 +91,27 @@ class TestSinatraAsync < Test::Unit::TestCase
     async_continue
     assert_equal 302, last_response.status
   end
-  
+
   def test_em_halt
     get '/em_halt'
     assert_async
     em_async_continue
     assert_equal 404, last_response.status
+  end
+
+  def test_error_blocks_sync
+    get '/s401'
+    assert_async
+    async_continue
+    assert_equal 401, last_response.status
+    assert_equal '401', last_response.body
+  end
+
+  def test_error_blocks_async
+    get '/a401'
+    assert_async
+    async_continue
+    assert_equal 401, last_response.status
+    assert_equal '401', last_response.body
   end
 end
