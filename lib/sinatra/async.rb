@@ -35,6 +35,8 @@ module Sinatra #:nodoc:
   #  
   #  end
   module Async
+    autoload :Test, 'sinatra/async/test'
+    
     # Similar to Sinatra::Base#get, but the block will be scheduled to run
     # during the next tick of the EventMachine reactor. In the meantime,
     # Thin will hold onto the client connection, awaiting a call to 
@@ -58,16 +60,51 @@ module Sinatra #:nodoc:
 
     private
     def aroute(verb, path, opts = {}, &block) #:nodoc:
+      method = "A#{verb} #{path}".to_sym
+      define_method method, &block
+
       route(verb, path, opts) do |*bargs|
-        method = "A#{verb} #{path}".to_sym
+        async_runner(method, *bargs)
+        async_response
+      end
+    end
 
-        mc = class << self; self; end
-        mc.send :define_method, method, &block
-        mc.send :alias_method, :__async_callback, method
+    module Helpers
+      # Send the given body or block as the final response to the asynchronous 
+      # request.
+      def body(*args, &blk)
+        b = super
+        if @async_running
+          request.env['async.callback'][
+            [response.status, response.headers, response.body]
+          ]
+        else
+          b
+        end
+      end
 
-        EM.next_tick {
+      # By default schedule_async calls EventMachine#next_tick, if you're using
+      # threads or some other scheduling mechanism, it must take the block
+      # passed here.
+      def async_schedule(&b)
+        if options.environment == :test
+          options.set :async_schedules, [] unless options.respond_to? :async_schedules
+          options.async_schedules << b
+        else
+          EM.next_tick(&b)
+        end
+      end
+
+      # Defaults to throw async as that is most commonly used by servers.
+      def async_response
+        throw :async
+      end
+
+      def async_runner(method, *bargs)
+        async_schedule do
+          @async_running = true
           begin
-            send(:__async_callback, *bargs)
+            __send__(method, *bargs)
           rescue ::Exception => boom
             if options.show_exceptions?
               # HACK: handle_exception! re-raises the exception if show_exceptions?,
@@ -81,20 +118,7 @@ module Sinatra #:nodoc:
               body(handle_exception!(boom))
             end
           end
-        }
-
-        throw :async      
-      end
-    end
-
-    module Helpers
-      # Send the given body or block as the final response to the asynchronous 
-      # request.
-      def body(*args, &blk)
-        super
-        request.env['async.callback'][
-          [response.status, response.headers, response.body]
-        ] if respond_to?(:__async_callback)
+        end
       end
     end
 
