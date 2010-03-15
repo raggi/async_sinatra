@@ -104,7 +104,11 @@ module Sinatra #:nodoc:
         async_schedule do
           @async_running = true
           begin
-            __send__(method, *bargs)
+            h = catch(:halt) { __send__(method, *bargs); nil }
+            if h
+              invoke { halt h }
+              body response.body
+            end
           rescue ::Exception => boom
             if options.show_exceptions?
               # HACK: handle_exception! re-raises the exception if show_exceptions?,

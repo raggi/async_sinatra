@@ -24,6 +24,14 @@ class TestSinatraAsync < Test::Unit::TestCase
     aget '/em_timeout' do
       # never send a response
     end
+
+    aget '/404' do
+      not_found
+    end
+
+    aget '/302' do
+      halt 302
+    end
   end
 
   def app
@@ -54,4 +62,17 @@ class TestSinatraAsync < Test::Unit::TestCase
     end
   end
 
+  def test_404
+    get '/404'
+    assert_async
+    async_continue
+    assert_equal 404, last_response.status
+  end
+
+  def test_302
+    get '/302'
+    assert_async
+    async_continue
+    assert_equal 302, last_response.status
+  end
 end
