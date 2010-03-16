@@ -28,6 +28,16 @@ class Sinatra::Async::Test
 
   module Methods
     include Rack::Test::Methods
+    
+    %w(get put post delete head).each do |m|
+      eval <<-RUBY, binding, __FILE__, __LINE__
+        def a#{m}(*args)
+          #{m} *args
+          assert_async
+          async_continue
+        end
+      RUBY
+    end
 
     def build_rack_mock_session # XXX move me
       Sinatra::Async::Test::AsyncSession.new(app)
