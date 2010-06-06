@@ -1,7 +1,7 @@
 #!/usr/bin/env rake
 require 'rake/clean'
 
-task :default => :spec
+task :default => :test
 
 def spec(file = Dir['*.gemspec'].first)
   @spec ||=
@@ -19,27 +19,25 @@ end
 
 def manifest; @manifest ||= `git ls-files`.split("\n").reject{|s|s=~/\.gemspec$|\.gitignore$/}; end
 
-require 'rake/gempackagetask'
-def gem_task; @gem_task ||= Rake::GemPackageTask.new(spec); end
+require 'rubygems/package_task'
+def gem_task; @gem_task ||= Gem::PackageTask.new(spec); end
 gem_task.define
 Rake::Task[:clobber].enhance [:clobber_package]
 
 require 'rake/testtask'
-Rake::TestTask.new(:spec) do |t|
+Rake::TestTask.new do |t|
   t.test_files = spec.test_files
-  t.ruby_opts = ['-rubygems'] if defined? Gem
+  t.ruby_opts = ['-rubygems']
   t.warning = true
 end unless spec.test_files.empty?
 
-require 'rake/rdoctask'
-df = begin; require 'rdoc/generator/darkfish'; true; rescue LoadError; end
-rdtask = Rake::RDocTask.new do |rd|
+require 'rdoc/task'
+rdtask = RDoc::Task.new do |rd|
   rd.title = spec.name
   rd.main = spec.extra_rdoc_files.first
   lib_rexp = spec.require_paths.map { |p| Regexp.escape p }.join('|')
   rd.rdoc_files.include(*manifest.grep(/^(?:#{lib_rexp})/))
   rd.rdoc_files.include(*spec.extra_rdoc_files)
-  rd.template = 'darkfish' if df
 end
 
 Rake::Task[:clobber].enhance [:clobber_rdoc]
@@ -70,7 +68,7 @@ task :gemspec => spec.filename
 
 task spec.filename do
   spec.files = manifest
-  spec.test_files = manifest.grep(/(?:spec|test)\/*.rb/)
+  spec.test_files = manifest.grep(%r{test/test_.*\.rb})
   open(spec.filename, 'w') { |w| w.write spec.to_ruby }
 end
 
@@ -90,7 +88,7 @@ task :tag do
   end
 end
 
-desc "Release #{gem_task.gem_file} to rubyforge"
+desc "Release #{gem_task.gem_spec.file_name} to rubyforge"
 task :release => [:tag, :gem, :publish] do |t|
   sh "rubyforge add_release #{spec.rubyforge_project} #{spec.name} #{spec.version} #{gem_task.package_dir}/#{gem_task.gem_file}"
 end

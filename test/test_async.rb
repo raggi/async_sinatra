@@ -1,10 +1,9 @@
 gem 'test-unit'
 require "test/unit"
-require 'rack/test'
 
 require 'eventmachine'
 
-require "sinatra/async"
+require "sinatra/async/test"
 
 class TestSinatraAsync < Test::Unit::TestCase
   include Sinatra::Async::Test::Methods

@@ -1,22 +1,19 @@
-
 require 'eventmachine'
-
-require "sinatra/async"
+require "sinatra/async/test"
 
 require 'spec/autorun'
 require 'spec/interop/test'
-require 'rack/test'
 
 require 'em-http'
 
 Spec::Runner.configure { |c| }
- 
+
 def server(base=Sinatra::Base, &block)
   s = Sinatra.new(base, &block).new
   s.options.set :environment, :test
   s
 end
- 
+
 def app
   @app
 end
@@ -28,16 +25,16 @@ describe "Asynchronous routes" do
     @app = server do
       register Sinatra::Async
       disable :raise_errors, :show_exceptions
- 
+
       aget '/' do
         body "hello async"
       end      
     end
     aget '/'
-    last_response.status.should == 200
+    last_response.status.should_equal 200
     last_response.body.should == "hello async"
   end
-  
+
   it "should correctly deal with raised exceptions" do
     @app = server do
       register Sinatra::Async
@@ -55,7 +52,7 @@ describe "Asynchronous routes" do
     last_response.status.should == 500
     last_response.body.should == "problem: RuntimeError boom"
   end
-  
+
   it "should correctly deal with halts" do
     @app = server do
       register Sinatra::Async
@@ -65,12 +62,12 @@ describe "Asynchronous routes" do
         body "never called"
       end
     end
- 
+
     aget '/'
     last_response.status.should == 406
     last_response.body.should == "Format not supported"
   end
-  
+
   it "should correctly deal with halts and pass it to the defined error blocks if any" do
     @app = server do
       register Sinatra::Async
@@ -89,7 +86,7 @@ describe "Asynchronous routes" do
     last_response.headers['Content-Type'].should == "text/plain"
     last_response.body.should == "problem: Format not supported"
   end
-  
+
   describe "using EM libraries inside route block" do
     it "should still work as usual" do
       @app = server do
@@ -111,7 +108,7 @@ describe "Asynchronous routes" do
       last_response.status.should == 200
       last_response.body.should == "ok"
     end
- 
+
     it "should correctly deal with exceptions raised from within EM callbacks" do
       @app = server do
         register Sinatra::Async
@@ -136,7 +133,7 @@ describe "Asynchronous routes" do
       last_response.status.should == 500
       last_response.body.should == "RuntimeError: boom"
     end
- 
+
     it "should correctly deal with halts thrown from within EM callbacks" do
       @app = server do
         register Sinatra::Async

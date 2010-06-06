@@ -1,3 +1,4 @@
+require 'sinatra/async'
 require 'rack/test'
 
 class Rack::MockResponse
@@ -30,9 +31,9 @@ class Sinatra::Async::Test
     include Rack::Test::Methods
     
     %w(get put post delete head).each do |m|
-      eval <<-RUBY, binding, __FILE__, __LINE__
+      eval <<-RUBY, binding, __FILE__, __LINE__ + 1
         def a#{m}(*args)
-          #{m} *args
+          #{m}(*args)
           assert_async
           async_continue
         end
