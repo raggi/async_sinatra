@@ -75,6 +75,7 @@ end
 desc "Bump version from #{spec.version} to #{spec.version.to_s.succ}"
 task :bump do
   spec.version = spec.version.to_s.succ
+  spec.date = Time.now
 end
 
 desc "Tag version #{spec.version}"

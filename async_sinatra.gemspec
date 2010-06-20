@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{async_sinatra}
-  s.version = "0.2.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["James Tucker"]
-  s.date = %q{2009-03-24}
+  s.date = %q{2010-06-20}
   s.description = %q{Asynchronous response API for Sinatra}
   s.email = %q{raggi@rubyforge.org}
   s.extra_rdoc_files = ["README.rdoc"]
