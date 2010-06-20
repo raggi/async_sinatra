@@ -7,10 +7,16 @@
 == DESCRIPTION:
 
 A Sinatra plugin to provide convenience whilst performing asynchronous
-responses inside of the Sinatra framework running under the Thin webserver.
+responses inside of the Sinatra framework running under async webservers.
 
 To properly utilise this package, some knowledge of EventMachine and/or
 asynchronous patterns is recommended.
+
+Currently, supporting servers include:
+
+* Thin
+* Rainbows
+* Zbatery
 
 == SYNOPSIS:
 
@@ -36,7 +42,7 @@ See Sinatra::Async for more details.
 == REQUIREMENTS:
 
 * Sinatra (>= 0.9)
-* Thin    (>= 1.2)
+* An async webserver
 
 == INSTALL:
 
