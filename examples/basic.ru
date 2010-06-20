@@ -18,6 +18,15 @@ class AsyncTest < Sinatra::Base
     raise 'boom'
   end
 
+  aget '/araise' do
+    EM.add_timer(1) { body { raise "boom" } }
+  end
+
+  # This will blow up in thin currently
+  aget '/raise/die' do
+    EM.add_timer(1) { raise 'die' }
+  end
+
 end
 
 run AsyncTest.new

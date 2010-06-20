@@ -71,18 +71,18 @@ module Sinatra #:nodoc:
     module Helpers
       # Send the given body or block as the final response to the asynchronous 
       # request.
-      def body(*args, &blk)
-        b = super
+      def body(*args)
         if @async_running
+          block_given? ? async_handle_exception { super yield } : super
           request.env['async.callback'][
             [response.status, response.headers, response.body]
           ]
         else
-          b
+          super
         end
       end
 
-      # By default schedule_async calls EventMachine#next_tick, if you're using
+      # By default async_schedule calls EventMachine#next_tick, if you're using
       # threads or some other scheduling mechanism, it must take the block
       # passed here.
       def async_schedule(&b)
@@ -102,26 +102,27 @@ module Sinatra #:nodoc:
       def async_runner(method, *bargs)
         async_schedule do
           @async_running = true
-          begin
-            h = catch(:halt) { __send__(method, *bargs); nil }
-            if h
+          async_handle_exception do
+            if h = catch(:halt) { __send__(method, *bargs); nil }
               invoke { halt h }
               invoke { error_block! response.status }
               body(response.body)
             end
-          rescue ::Exception => boom
-            if options.show_exceptions?
-              # HACK: handle_exception! re-raises the exception if show_exceptions?,
-              # so we ignore any errors and instead create a ShowExceptions page manually
-              handle_exception!(boom) rescue nil
-              s, h, b = Sinatra::ShowExceptions.new(proc{ raise boom }).call(request.env)
-              response.status = s
-              response.headers.replace(h)
-              body(b)
-            else
-              body(handle_exception!(boom))
-            end
           end
+        end
+      end
+
+      def async_handle_exception
+        yield
+      rescue ::Exception => boom
+        if options.show_exceptions?
+          printer = Sinatra::ShowExceptions.new(proc{ raise boom })
+          s, h, b = printer.call(request.env)
+          response.status = s
+          response.headers.replace(h)
+          response.body = b
+        else
+          body(handle_exception!(boom))
         end
       end
 
