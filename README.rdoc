@@ -1,4 +1,4 @@
-= async_sinatra (for Thin)
+= async_sinatra
     by James Tucker
     http://ra66i.org
     http://github.com/raggi/async_sinatra
