@@ -136,7 +136,7 @@ module Sinatra #:nodoc:
         invoke { error_block! response.status }
         body response.body
       end
-      
+
       # The given block will be executed if the user closes the connection
       # prematurely (before we've sent a response). This is good for
       # deregistering callbacks that would otherwise send the body (for

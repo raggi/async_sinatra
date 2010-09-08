@@ -65,7 +65,7 @@ class TestSinatraAsync < Test::Unit::TestCase
         self.class.singletons << 'async_close_cleaned_up'
       end
     end
-    
+
     aget '/redirect' do
       redirect '/'
     end
@@ -137,25 +137,19 @@ class TestSinatraAsync < Test::Unit::TestCase
   end
 
   def test_async_close
-    get '/async_close'
-    assert_async
-    async_continue
+    aget '/async_close'
     async_close
     assert_equal 'async_closed', TestApp.singletons.shift
   end
 
   def test_on_close
-    get '/on_close'
-    assert_async
-    async_continue
+    aget '/on_close'
     async_close
     assert_equal 'async_close_cleaned_up', TestApp.singletons.shift
   end
-  
+
   def test_redirect
-    get '/redirect'
-    assert_async
-    async_continue
+    aget '/redirect'
     assert last_response.redirect?
     assert_equal 302, last_response.status
     assert_equal '/', last_response.location

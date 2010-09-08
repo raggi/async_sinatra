@@ -50,14 +50,14 @@ class Sinatra::Async::Test
 
   module Methods
     include Rack::Test::Methods
-    
+
     %w(get put post delete head).each do |m|
       eval <<-RUBY, binding, __FILE__, __LINE__ + 1
-        def a#{m}(*args)
-          #{m}(*args)
-          assert_async
-          async_continue
-        end
+      def a#{m}(*args)
+        #{m}(*args)
+        assert_async
+        async_continue
+      end
       RUBY
     end
 
@@ -75,20 +75,34 @@ class Sinatra::Async::Test
       current_session.last_request.env['async.close'].succeed
     end
 
+    # Executes the pending asynchronous blocks, required for the
+    # aget/apost/etc blocks to run.
     def async_continue
       while b = app.options.async_schedules.shift
         b.call
       end
     end
 
+    # Crank the eventmachine loop until a response is made, or timeout after a
+    # particular period, by default 10s. If the timeout is nil, no timeout
+    # will occur.
     def em_async_continue(timeout = 10)
       timed = false
       EM.run do
         async_continue
-        EM.tick_loop { EM.stop unless last_response.async? }
-        EM.add_timer(timeout) { timed = true; EM.stop }
+        em_hard_loop { EM.stop unless last_response.async? }
+        EM.add_timer(timeout) { timed = true; EM.stop } if timeout
       end
       assert !timed, "asynchronous timeout after #{timeout} seconds"
+    end
+
+    # Uses EM.tick_loop or a periodic timer to check for changes
+    def em_hard_loop
+      if EM.respond_to?(:tick_loop)
+        EM.tick_loop { yield }
+      else
+        EM.periodic_timer(0.0001) { yield }
+      end
     end
   end
 end
