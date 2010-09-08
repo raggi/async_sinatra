@@ -12,6 +12,12 @@ class TestSinatraAsync < Test::Unit::TestCase
     set :environment, :test
     register Sinatra::Async
 
+    # Hack for storing some global data accessible in tests (normally you
+    # shouldn't need to do this!)
+    def self.singletons
+      @singletons ||= []
+    end
+
     error 401 do
       '401'
     end
@@ -46,6 +52,18 @@ class TestSinatraAsync < Test::Unit::TestCase
 
     aget '/a401' do
       ahalt 401
+    end
+
+    aget '/async_close' do
+      # don't call body here, the 'user' is going to 'disconnect' before we do
+      env['async.close'].callback { self.class.singletons << 'async_closed' }
+    end
+
+    aget '/on_close' do
+      # sugared version of the above
+      on_close do
+        self.class.singletons << 'async_close_cleaned_up'
+      end
     end
   end
 
@@ -112,5 +130,21 @@ class TestSinatraAsync < Test::Unit::TestCase
     async_continue
     assert_equal 401, last_response.status
     assert_equal '401', last_response.body
+  end
+
+  def test_async_close
+    get '/async_close'
+    assert_async
+    async_continue
+    async_close
+    assert_equal 'async_closed', TestApp.singletons.shift
+  end
+
+  def test_on_close
+    get '/on_close'
+    assert_async
+    async_continue
+    async_close
+    assert_equal 'async_close_cleaned_up', TestApp.singletons.shift
   end
 end

@@ -8,10 +8,31 @@ class Rack::MockResponse
 end
 
 class Sinatra::Async::Test
+
   class AsyncSession < Rack::MockSession
+    class AsyncCloser
+      def initialize
+        @callbacks, @errbacks = [], []
+      end
+      def callback(&b)
+        @callbacks << b
+      end
+      def errback(&b)
+        @errbacks << b
+      end
+      def fail
+        @errbacks.each { |cb| cb.call }
+        @errbacks.clear
+      end
+      def succeed
+        @callbacks.each { |cb| cb.call }
+        @callbacks.clear
+      end
+    end
+
     def request(uri, env)
       env['async.callback'] = lambda { |r| s,h,b = *r; handle_last_response(uri, env, s,h,b) }
-      env['async.close'] = lambda { raise 'close connection' } # XXX deal with this
+      env['async.close'] = AsyncCloser.new
       catch(:async) { super }
       @last_response ||= Rack::MockResponse.new(-1, {}, [], env["rack.errors"].flush)
     end
@@ -46,6 +67,12 @@ class Sinatra::Async::Test
 
     def assert_async
       assert last_response.async?
+    end
+
+    # Simulate a user closing the connection before a response is sent.
+    def async_close
+      raise ArgumentError, 'please make a request first' unless last_request
+      current_session.last_request.env['async.close'].succeed
     end
 
     def async_continue
