@@ -101,7 +101,7 @@ class Sinatra::Async::Test
       if EM.respond_to?(:tick_loop)
         EM.tick_loop { yield }
       else
-        EM.periodic_timer(0.0001) { yield }
+        EM.add_periodic_timer(0.0001) { yield }
       end
     end
   end
