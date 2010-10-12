@@ -43,7 +43,7 @@ class TestSinatraAsync < Test::Unit::TestCase
     end
 
     aget '/em_halt' do
-      EM.next_tick { ahalt 404 }
+      em_async_schedule { ahalt 404 }
     end
 
     aget '/s401' do
@@ -68,6 +68,25 @@ class TestSinatraAsync < Test::Unit::TestCase
 
     aget '/redirect' do
       redirect '/'
+    end
+
+    aget '/aredirect' do
+      async_schedule { redirect '/' }
+    end
+
+    aget '/emredirect' do
+      em_async_schedule { redirect '/' }
+    end
+
+    # Defeat the test environment semantics, ensuring we actually follow the
+    # non-test branch of async_schedule. You would normally just call
+    # async_schedule in user apps, and use test helpers appropriately.
+    def em_async_schedule
+      o = self.class.environment
+      self.class.set :environment, :normal
+      async_schedule { yield }
+    ensure
+      self.class.set :environment, o
     end
   end
 
@@ -150,6 +169,21 @@ class TestSinatraAsync < Test::Unit::TestCase
 
   def test_redirect
     aget '/redirect'
+    assert last_response.redirect?
+    assert_equal 302, last_response.status
+    assert_equal '/', last_response.location
+  end
+
+  def test_aredirect
+    aget '/aredirect'
+    assert last_response.redirect?
+    assert_equal 302, last_response.status
+    assert_equal '/', last_response.location
+  end
+
+  def test_emredirect
+    aget '/emredirect'
+    em_async_continue
     assert last_response.redirect?
     assert_equal 302, last_response.status
     assert_equal '/', last_response.location

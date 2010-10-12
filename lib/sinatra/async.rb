@@ -85,16 +85,23 @@ module Sinatra #:nodoc:
         end
       end
 
-      # By default async_schedule calls EventMachine#next_tick, if you're using
-      # threads or some other scheduling mechanism, it must take the block
-      # passed here.
+      # async_schedule is used to schedule work in a future context, the block
+      # is wrapped up so that exceptions and halts (redirect, etc) are handled
+      # correctly.
       def async_schedule(&b)
         if options.environment == :test
           options.set :async_schedules, [] unless options.respond_to? :async_schedules
-          options.async_schedules << b
+          options.async_schedules << lambda { async_catch_execute(&b) }
         else
-          EM.next_tick(&b)
+          native_async_schedule { async_catch_execute(&b) }
         end
+      end
+
+      # By default native_async_schedule calls EventMachine#next_tick, if
+      # you're using threads or some other scheduling mechanism, it must take
+      # the block passed here and schedule it for running in the future.
+      def native_async_schedule(&b)
+        EM.next_tick(&b)
       end
 
       # Defaults to throw async as that is most commonly used by servers.
@@ -103,14 +110,16 @@ module Sinatra #:nodoc:
       end
 
       def async_runner(method, *bargs)
-        async_schedule do
-          @async_running = true
-          async_handle_exception do
-            if h = catch(:halt) { __send__(method, *bargs); nil }
-              invoke { halt h }
-              invoke { error_block! response.status }
-              body(response.body)
-            end
+        async_schedule { __send__(method, *bargs); nil }
+      end
+
+      def async_catch_execute(&b)
+        @async_running = true
+        async_handle_exception do
+          if h = catch(:halt, &b)
+            invoke { halt h }
+            invoke { error_block! response.status }
+            body(response.body)
           end
         end
       end
