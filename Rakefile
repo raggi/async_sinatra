@@ -93,5 +93,6 @@ desc "Release #{gem_task.gem_spec.file_name}"
 task :release => [:tag, :gem, :publish] do |t|
   sh "rubyforge add_release #{spec.rubyforge_project} #{spec.name} #{spec.version} #{gem_task.package_dir}/#{gem_task.gem_spec.file_name}"
   sh "gem push #{gem_task.package_dir}/#{gem_task.gem_spec.file_name}"
-  sh "git push --all --tags"
+  sh "git push --all"
+  sh "git push --tags"
 end
