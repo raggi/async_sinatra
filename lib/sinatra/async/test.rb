@@ -66,7 +66,7 @@ class Sinatra::Async::Test
     end
 
     def assert_async
-      assert last_response.async?
+      assert last_response.async?, "response not asynchronous. expected a status of -1 got #{last_response.status}"
     end
 
     # Simulate a user closing the connection before a response is sent.
