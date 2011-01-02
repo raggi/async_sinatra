@@ -1,8 +1,7 @@
 = async_sinatra
-    by James Tucker
-    http://ra66i.org
-    http://github.com/raggi/async_sinatra
-    http://libraggi.rubyforge.org/async_sinatra
+
+http://github.com/raggi/async_sinatra
+http://libraggi.rubyforge.org/async_sinatra
 
 == DESCRIPTION:
 
