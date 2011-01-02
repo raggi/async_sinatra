@@ -1,98 +1,18 @@
 #!/usr/bin/env rake
-require 'rake/clean'
 
-task :default => :test
+require 'hoe'
+Hoe.plugin :doofus, :git, :minitest, :gemspec, :rubyforge
 
-def spec(file = Dir['*.gemspec'].first)
-  @spec ||=
-  begin
-    require 'rubygems/specification'
-    Thread.abort_on_exception = true
-    data = File.read(file)
-    spec = nil
-    Thread.new { spec = eval("$SAFE = 3\n#{data}") }.join
-    spec.instance_variable_set(:@filename, file)
-    def spec.filename; @filename; end
-    spec
-  end
-end
+Hoe.spec 'async_sinatra' do
+  developer 'raggi', 'raggi@rubyforge.org'
 
-def manifest; @manifest ||= `git ls-files`.split("\n").reject{|s|s=~/\.gemspec$|\.gitignore$/}; end
+  extra_dev_deps << %w(hoe-doofus >=1.0)
+  extra_dev_deps << %w(hoe-seattlerb >=1.2)
+  extra_dev_deps << %w(hoe-git >=1.3)
+  extra_dev_deps << %w(hoe-gemspec >=1.0)
 
-require 'rubygems/package_task'
-def gem_task; @gem_task ||= Gem::PackageTask.new(spec); end
-gem_task.define
-Rake::Task[:clobber].enhance [:clobber_package]
-
-require 'rake/testtask'
-Rake::TestTask.new do |t|
-  t.test_files = spec.test_files
-  t.ruby_opts = ['-rubygems']
-  t.warning = true
-end unless spec.test_files.empty?
-
-require 'rdoc/task'
-rdtask = RDoc::Task.new do |rd|
-  rd.title = spec.name
-  rd.main = spec.extra_rdoc_files.first
-  lib_rexp = spec.require_paths.map { |p| Regexp.escape p }.join('|')
-  rd.rdoc_files.include(*manifest.grep(/^(?:#{lib_rexp})/))
-  rd.rdoc_files.include(*spec.extra_rdoc_files)
-end
-
-Rake::Task[:clobber].enhance [:clobber_rdoc]
-
-require 'yaml'
-require 'rake/contrib/sshpublisher'
-desc "Publish rdoc to rubyforge"
-task :publish => rdtask.name do
-  rf_cfg = File.expand_path '~/.rubyforge/user-config.yml'
-  host = "#{YAML.load_file(rf_cfg)['username']}@rubyforge.org"
-  remote_dir = "/var/www/gforge-projects/#{spec.rubyforge_project}/#{spec.name}/"
-  Rake::SshDirPublisher.new(host, remote_dir, rdtask.rdoc_dir).upload
-end
-
-desc 'Generate and open documentation'
-task :docs => :rdoc do
-  path = rdtask.send :rdoc_target
-  case RUBY_PLATFORM
-  when /darwin/       ; sh "open #{path}"
-  when /mswin|mingw/  ; sh "start #{path}"
-  else 
-    sh "firefox #{path}"
-  end
-end
-
-desc "Regenerate gemspec"
-task :gemspec => spec.filename
-
-task spec.filename do
-  spec.files = manifest
-  spec.test_files = manifest.grep(%r{test/test_.*\.rb})
-  open(spec.filename, 'w') { |w| w.write spec.to_ruby }
-end
-
-desc "Bump version from #{spec.version} to #{spec.version.to_s.succ}"
-task :bump do
-  spec.version = spec.version.to_s.succ
-  spec.date = Time.now
-end
-
-desc "Tag version #{spec.version}"
-task :tag do
-  tagged = Dir.new('.git/refs/tags').entries.include? spec.version.to_s
-  if tagged
-    warn "Tag #{spec.version} already exists"
-  else
-    # TODO release message in tag message
-    sh "git tag #{spec.version}"
-  end
-end
-
-desc "Release #{gem_task.gem_spec.file_name}"
-task :release => [:tag, :gem, :publish] do |t|
-  sh "rubyforge add_release #{spec.rubyforge_project} #{spec.name} #{spec.version} #{gem_task.package_dir}/#{gem_task.gem_spec.file_name}"
-  sh "gem push #{gem_task.package_dir}/#{gem_task.gem_spec.file_name}"
-  sh "git push --all"
-  sh "git push --tags"
+  self.extra_rdoc_files = FileList["**/*.rdoc"]
+  self.history_file     = "CHANGELOG.rdoc"
+  self.readme_file      = "README.rdoc"
+  self.rubyforge_name   = 'libraggi'
 end
