@@ -93,6 +93,12 @@ class TestSinatraAsync < Test::Unit::TestCase
   def app
     TestApp.new
   end
+  
+  def assert_redirect(path)
+    r = last_request.env
+    uri = r['rack.url_scheme'] + '://' + r['SERVER_NAME'] + path
+    assert_equal uri, last_response.location
+  end
 
   def test_basic_async_get
     get '/hello'
@@ -171,14 +177,14 @@ class TestSinatraAsync < Test::Unit::TestCase
     aget '/redirect'
     assert last_response.redirect?
     assert_equal 302, last_response.status
-    assert_equal '/', last_response.location
+    assert_redirect '/'
   end
 
   def test_aredirect
     aget '/aredirect'
     assert last_response.redirect?
     assert_equal 302, last_response.status
-    assert_equal '/', last_response.location
+    assert_redirect '/'
   end
 
   def test_emredirect
@@ -186,6 +192,6 @@ class TestSinatraAsync < Test::Unit::TestCase
     em_async_continue
     assert last_response.redirect?
     assert_equal 302, last_response.status
-    assert_equal '/', last_response.location
+    assert_redirect '/'
   end
 end
