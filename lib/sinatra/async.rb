@@ -89,9 +89,9 @@ module Sinatra #:nodoc:
       # is wrapped up so that exceptions and halts (redirect, etc) are handled
       # correctly.
       def async_schedule(&b)
-        if options.environment == :test
-          options.set :async_schedules, [] unless options.respond_to? :async_schedules
-          options.async_schedules << lambda { async_catch_execute(&b) }
+        if settings.environment == :test
+          settings.set :async_schedules, [] unless settings.respond_to? :async_schedules
+          settings.async_schedules << lambda { async_catch_execute(&b) }
         else
           native_async_schedule { async_catch_execute(&b) }
         end
@@ -127,7 +127,7 @@ module Sinatra #:nodoc:
       def async_handle_exception
         yield
       rescue ::Exception => boom
-        if options.show_exceptions?
+        if settings.show_exceptions?
           printer = Sinatra::ShowExceptions.new(proc{ raise boom })
           s, h, b = printer.call(request.env)
           response.status = s
