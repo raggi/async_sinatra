@@ -78,6 +78,18 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
       em_async_schedule { redirect '/' }
     end
 
+    aget '/agents', :agent => /chrome/ do
+      body { 'chrome' }
+    end
+
+    aget '/agents', :agent => /firefox/ do
+     body { 'firefox' }
+    end
+
+    aget '/agents' do
+      body { 'other' }
+    end
+
     # Defeat the test environment semantics, ensuring we actually follow the
     # non-test branch of async_schedule. You would normally just call
     # async_schedule in user apps, and use test helpers appropriately.
@@ -93,7 +105,7 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
   def app
     TestApp.new
   end
-  
+
   def assert_redirect(path)
     r = last_request.env
     uri = r['rack.url_scheme'] + '://' + r['SERVER_NAME'] + path
@@ -193,5 +205,22 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
     assert last_response.redirect?
     assert_equal 302, last_response.status
     assert_redirect '/'
+  end
+
+  def test_route_conditions_no_match
+    aget '/agents'
+    assert_equal 'other', last_response.body
+  end
+
+  def test_route_conditions_first
+    header "User-Agent", "chrome"
+    aget '/agents'
+    assert_equal 'chrome', last_response.body
+  end
+
+  def test_route_conditions_second
+    header "User-Agent", "firefox"
+    aget '/agents'
+    assert_equal 'firefox', last_response.body
   end
 end

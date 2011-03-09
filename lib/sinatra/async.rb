@@ -56,10 +56,12 @@ module Sinatra #:nodoc:
     def adelete(path, opts={}, &bk); aroute 'DELETE', path, opts, &bk; end
     # See #aget.
     def ahead(path, opts={}, &bk); aroute 'HEAD', path, opts, &bk; end
+    # See #aget
+    def aoptions(path, opts={}, &bk); aroute 'OPTIONS', path, opts, &bk; end
 
     private
     def aroute(verb, path, opts = {}, &block) #:nodoc:
-      method = "A#{verb} #{path}".to_sym
+      method = :"A#{verb} #{path} #{opts.hash}"
       define_method method, &block
 
       route(verb, path, opts) do |*bargs|
