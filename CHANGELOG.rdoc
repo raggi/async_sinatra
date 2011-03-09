@@ -1,4 +1,13 @@
-=== 0.4.0 / <%= Time.new.strftime("%Y-%m-%d") %>
+=== 0.5.0 / 2011-03-08
+
+* Fix support for conditional routes!
+* Modified assert_async assertion to add error message [JamesAlmond]
+* Move to minitest and add dependency loader
+* Support sinatra 1.2.0
+* Add support for options (sinatra 1.2.0)
+* Add support for gemtest
+
+=== 0.4.0
 
 * 1 major enhancement
 
