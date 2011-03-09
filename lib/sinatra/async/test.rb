@@ -51,7 +51,7 @@ class Sinatra::Async::Test
   module Methods
     include Rack::Test::Methods
 
-    %w(get put post delete head).each do |m|
+    %w(get put post delete head options).each do |m|
       eval <<-RUBY, binding, __FILE__, __LINE__ + 1
       def a#{m}(*args)
         #{m}(*args)
