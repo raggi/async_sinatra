@@ -1,11 +1,11 @@
-gem 'test-unit'
-require "test/unit"
+require 'gemloader'
+require 'minitest/autorun'
 
 require 'eventmachine'
 
 require "sinatra/async/test"
 
-class TestSinatraAsync < Test::Unit::TestCase
+class TestSinatraAsync < MiniTest::Unit::TestCase
   include Sinatra::Async::Test::Methods
 
   class TestApp < Sinatra::Base
@@ -119,7 +119,7 @@ class TestSinatraAsync < Test::Unit::TestCase
   def test_em_async_continue_timeout
     get '/em_timeout'
     assert_async
-    assert_raises(Test::Unit::AssertionFailedError) do
+    assert_raises(MiniTest::Assertion) do
       em_async_continue(0.001)
     end
   end
