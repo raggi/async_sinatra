@@ -131,8 +131,11 @@ module Sinatra #:nodoc:
         throw :async
       end
 
-      def async_runner(method, *bargs)
-        async_schedule { __send__(method, *bargs); nil }
+      def async_runner(meth, *bargs)
+        async_schedule do
+          method(meth).arity == 0 ? send(meth) : send(meth, *bargs)
+          nil
+        end
       end
 
       def async_catch_execute(&b)

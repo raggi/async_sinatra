@@ -99,6 +99,14 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
       body { settings.call_count += 1; '' }
     end
 
+    aget '/param/:a/' do |ma|
+      body { ma }
+    end
+
+    aget '/params/:a/' do
+      body { params[:a] }
+    end
+
     # Defeat the test environment semantics, ensuring we actually follow the
     # non-test branch of async_schedule. You would normally just call
     # async_schedule in user apps, and use test helpers appropriately.
@@ -112,7 +120,7 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
   end
 
   def app
-    TestApp.new
+    TestApp
   end
 
   def assert_redirect(path)
@@ -254,4 +262,17 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
     aget '/double_body_bug/example'
     assert_equal 1, settings.call_count
   end
+
+  def test_block_with_no_args
+    err = aget('/params/test/') rescue $!
+    assert_nil err
+    assert_equal 'test', last_response.body
+  end
+
+  def test_block_with_an_arg
+    err = aget('/param/test/') rescue $!
+    assert_nil err
+    assert_equal 'test', last_response.body
+  end
+
 end
