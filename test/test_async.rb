@@ -120,7 +120,7 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
   end
 
   def app
-    TestApp
+    TestApp.new
   end
 
   def assert_redirect(path)
