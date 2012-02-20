@@ -71,6 +71,10 @@ module Sinatra #:nodoc:
     end
 
     module Helpers
+      # aparams are used when inside of something that has been scheduled
+      # asynchronously in an asynchronous route. Essentially it is the last
+      # parameters to be set by the router (for example, containing the route
+      # captures).
       attr_reader :aparams
 
       # Send the given body or block as the final response to the asynchronous 
