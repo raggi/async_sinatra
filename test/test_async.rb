@@ -107,6 +107,10 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
       body { params[:a] }
     end
 
+    aget '/params/deferred/:a' do
+      async_schedule { body { aparams[:a] } }
+    end
+
     # Defeat the test environment semantics, ensuring we actually follow the
     # non-test branch of async_schedule. You would normally just call
     # async_schedule in user apps, and use test helpers appropriately.
@@ -270,6 +274,11 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
 
   def test_block_with_an_arg
     aget '/param/test'
+    assert_equal 'test', last_response.body
+  end
+
+  def test_params_deferred
+    aget '/params/deferred/test'
     assert_equal 'test', last_response.body
   end
 

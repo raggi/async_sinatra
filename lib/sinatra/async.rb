@@ -71,6 +71,8 @@ module Sinatra #:nodoc:
     end
 
     module Helpers
+      attr_reader :aparams
+
       # Send the given body or block as the final response to the asynchronous 
       # request.
       def body(value = nil)
