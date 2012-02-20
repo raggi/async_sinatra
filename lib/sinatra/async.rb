@@ -132,8 +132,14 @@ module Sinatra #:nodoc:
       end
 
       def async_runner(meth, *bargs)
+        @aparams = @params.dup
         async_schedule do
-          method(meth).arity == 0 ? send(meth) : send(meth, *bargs)
+          begin
+            original, @params = @params, @aparams
+            method(meth).arity == 0 ? send(meth) : send(meth, *bargs)
+          ensure
+            @params = original
+          end
           nil
         end
       end
