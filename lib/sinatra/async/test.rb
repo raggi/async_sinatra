@@ -78,7 +78,14 @@ class Sinatra::Async::Test
     # Executes the pending asynchronous blocks, required for the
     # aget/apost/etc blocks to run.
     def async_continue
-      while b = app.options.async_schedules.shift
+      # This hack exists because sinatra is now returning a proper rack stack.
+      # We might need to consider alternative approaches in future.
+      app = app()
+      until app.nil? || app.is_a?(Sinatra::Base)
+        app = app.instance_variable_get(:@app)
+      end
+      raise "Cannot determine sinatra application from #{app()}" unless app
+      while b = app.settings.async_schedules.shift
         b.call
       end
     end
