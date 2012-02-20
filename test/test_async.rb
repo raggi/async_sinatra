@@ -223,4 +223,13 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
     aget '/agents'
     assert_equal 'firefox', last_response.body
   end
+
+  def test_basic_async_head
+    head '/hello'
+    assert_async
+    async_continue
+    assert last_response.ok?
+    assert_equal '', last_response.body
+    assert_equal "11", last_response.headers['Content-Length']
+  end
 end

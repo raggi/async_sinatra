@@ -74,14 +74,28 @@ module Sinatra #:nodoc:
       # Send the given body or block as the final response to the asynchronous 
       # request.
       def body(*args)
-        if @async_running
+        if @async_running && (args.size > 0 || block_given?)
           block_given? ? async_handle_exception { super(yield) } : super
           if response.body.respond_to?(:call)
             response.body = Array(async_handle_exception {response.body.call})
           end
-          request.env['async.callback'][
-            [response.status, response.headers, response.body]
-          ]
+
+          # Taken from Base#call
+          unless @response['Content-Type']
+            if Array === body and body[0].respond_to? :content_type
+              content_type body[0].content_type
+            else
+              content_type :html
+            end
+          end
+
+          result = response.finish
+
+          # We don't get the HEAD middleware, so just do something convenient
+          # here.
+          result[-1] = [] if request.head?
+
+          request.env['async.callback'][ result ]
         else
           super
         end
