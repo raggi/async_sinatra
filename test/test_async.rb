@@ -26,6 +26,10 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
       body { 'hello async' }
     end
 
+    aget '/world' do
+      body 'world'
+    end
+
     aget '/em' do
       EM.add_timer(0.001) { body { 'em' }; EM.stop }
     end
@@ -231,5 +235,13 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
     assert last_response.ok?
     assert_equal '', last_response.body
     assert_equal "11", last_response.headers['Content-Length']
+  end
+
+  def test_string_body
+    get '/world'
+    assert_async
+    async_continue
+    assert last_response.ok?
+    assert_equal 'world', last_response.body
   end
 end
