@@ -155,6 +155,7 @@ module Sinatra #:nodoc:
           response.status = s
           response.headers.replace(h)
           response.body = b
+          body(response.body)
         else
           body(handle_exception!(boom))
         end
