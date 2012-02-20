@@ -73,9 +73,14 @@ module Sinatra #:nodoc:
     module Helpers
       # Send the given body or block as the final response to the asynchronous 
       # request.
-      def body(*args)
-        if @async_running && (args.size > 0 || block_given?)
-          block_given? ? async_handle_exception { super(yield) } : super
+      def body(value = nil)
+        if @async_running && (value || block_given?)
+          if block_given?
+            super { async_handle_exception { yield } }
+          else
+            super
+          end
+
           if response.body.respond_to?(:call)
             response.body = Array(async_handle_exception {response.body.call})
           end
@@ -96,6 +101,7 @@ module Sinatra #:nodoc:
           result[-1] = [] if request.head?
 
           request.env['async.callback'][ result ]
+          body
         else
           super
         end

@@ -94,6 +94,11 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
       body { 'other' }
     end
 
+    set :call_count, 0
+    aget '/double_body_bug/:subdomain' do |subdomain|
+      body { settings.call_count += 1; '' }
+    end
+
     # Defeat the test environment semantics, ensuring we actually follow the
     # non-test branch of async_schedule. You would normally just call
     # async_schedule in user apps, and use test helpers appropriately.
@@ -243,5 +248,10 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
     async_continue
     assert last_response.ok?
     assert_equal 'world', last_response.body
+  end
+
+  def test_double_body_bug
+    aget '/double_body_bug/example'
+    assert_equal 1, settings.call_count
   end
 end
