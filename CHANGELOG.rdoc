@@ -1,3 +1,11 @@
+=== 1.0.0 / 2012-02-20
+
+* Fixed basic usage of #params inside route blocks.
+* Introduced #aparams for use inside of asynchronous actions in place of #params
+* Bumped the rack and sinatra dependencies. Yes, this might be rails
+  incompatible. Make your async apps standalone, it'll save you anyway.
+* Various minor bug fixes
+
 === 0.5.0 / 2011-03-08
 
 * Fix support for conditional routes!
