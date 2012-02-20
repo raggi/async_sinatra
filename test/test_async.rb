@@ -99,11 +99,11 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
       body { settings.call_count += 1; '' }
     end
 
-    aget '/param/:a/' do |ma|
+    aget '/param/:a' do |ma|
       body { ma }
     end
 
-    aget '/params/:a/' do
+    aget '/params/:a' do
       body { params[:a] }
     end
 
@@ -264,12 +264,12 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
   end
 
   def test_block_with_no_args
-    aget '/params/test/'
+    aget '/params/test'
     assert_equal 'test', last_response.body
   end
 
   def test_block_with_an_arg
-    aget '/param/test/'
+    aget '/param/test'
     assert_equal 'test', last_response.body
   end
 
