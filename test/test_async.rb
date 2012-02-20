@@ -264,14 +264,12 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
   end
 
   def test_block_with_no_args
-    err = aget('/params/test/') rescue $!
-    assert_nil err
+    aget '/params/test/'
     assert_equal 'test', last_response.body
   end
 
   def test_block_with_an_arg
-    err = aget('/param/test/') rescue $!
-    assert_nil err
+    aget '/param/test/'
     assert_equal 'test', last_response.body
   end
 
