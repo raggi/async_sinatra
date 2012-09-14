@@ -87,6 +87,8 @@ class Sinatra::Async::Test
       # This hack exists because sinatra is now returning a proper rack stack.
       # We might need to consider alternative approaches in future.
       app = app()
+      app = app.app if app.is_a?(Sinatra::ExtendedRack)
+
       until app.nil? || app.is_a?(Sinatra::Base)
         app = app.instance_variable_get(:@app)
       end
