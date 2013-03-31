@@ -89,7 +89,7 @@ class Sinatra::Async::Test
       app = app()
       app = app.app if app.is_a?(Sinatra::ExtendedRack)
 
-      until app.nil? || app.is_a?(Sinatra::Base)
+      until app.nil? || app.is_a?(Sinatra::Base) || app.is_a?(Sinatra::Wrapper)
         app = app.instance_variable_get(:@app)
       end
       raise "Cannot determine sinatra application from #{app()}" unless app
