@@ -2,15 +2,15 @@
 
 Gem::Specification.new do |s|
   s.name = "async_sinatra"
-  s.version = "1.0.0"
+  s.version = "1.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["raggi"]
   s.date = "2013-03-31"
   s.description = "A Sinatra plugin to provide convenience whilst performing asynchronous\nresponses inside of the Sinatra framework running under async webservers.\n\nTo properly utilise this package, some knowledge of EventMachine and/or\nasynchronous patterns is recommended.\n\nCurrently, supporting servers include:\n\n* Thin\n* Rainbows\n* Zbatery"
   s.email = ["raggi@rubyforge.org"]
-  s.extra_rdoc_files = ["CHANGELOG.rdoc", "Manifest.txt", "README.rdoc", "CHANGELOG.rdoc", "README.rdoc", "pkg/async_sinatra-1.0.0/CHANGELOG.rdoc", "pkg/async_sinatra-1.0.0/README.rdoc"]
-  s.files = [".gemtest", "CHANGELOG.rdoc", "Manifest.txt", "README.rdoc", "Rakefile", "examples/basic.ru", "lib/async_sinatra.rb", "lib/sinatra/async.rb", "lib/sinatra/async/test.rb", "test/gemloader.rb", "test/test_async.rb", "pkg/async_sinatra-1.0.0/CHANGELOG.rdoc", "pkg/async_sinatra-1.0.0/README.rdoc"]
+  s.extra_rdoc_files = ["CHANGELOG.rdoc", "Manifest.txt", "README.rdoc", "CHANGELOG.rdoc", "README.rdoc"]
+  s.files = [".gemtest", "CHANGELOG.rdoc", "Manifest.txt", "README.rdoc", "Rakefile", "examples/basic.ru", "lib/async_sinatra.rb", "lib/sinatra/async.rb", "lib/sinatra/async/test.rb", "test/gemloader.rb", "test/test_async.rb"]
   s.homepage = "http://github.com/raggi/async_sinatra"
   s.rdoc_options = ["--main", "README.rdoc"]
   s.require_paths = ["lib"]
