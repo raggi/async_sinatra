@@ -33,6 +33,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<hoe-gemspec2>, [">= 1.0"])
       s.add_development_dependency(%q<eventmachine>, [">= 0.12.11"])
       s.add_development_dependency(%q<hoe>, ["~> 3.5"])
+      s.add_development_dependency(%q<rack-test>, ["~> 0.6.2"])
     else
       s.add_dependency(%q<rack>, [">= 1.4.1"])
       s.add_dependency(%q<sinatra>, [">= 1.3.2"])
