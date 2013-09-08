@@ -40,7 +40,7 @@ See Sinatra::Async for more details.
 
 == REQUIREMENTS:
 
-* Sinatra (>= 0.9)
+* Sinatra (>= 1.3.2)
 * An async webserver
 
 == INSTALL:
