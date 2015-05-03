@@ -58,6 +58,13 @@ module Sinatra #:nodoc:
     def ahead(path, opts={}, &bk); aroute 'HEAD', path, opts, &bk; end
     # See #aget
     def aoptions(path, opts={}, &bk); aroute 'OPTIONS', path, opts, &bk; end
+    # See #aget
+    def apatch(path, opts={}, &bk); aroute 'PATCH', path, opts, &bk; end
+    # See #aget
+    def alink(path, opts={}, &bk); aroute 'LINK', path, opts, &bk; end
+    # See #aget
+    def aunlink(path, opts={}, &bk); aroute 'UNLINK', path, opts, &bk; end
+
 
     private
     def aroute(verb, path, opts = {}, &block) #:nodoc:
