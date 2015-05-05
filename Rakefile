@@ -19,5 +19,4 @@ Hoe.spec 'async_sinatra' do
   self.extra_rdoc_files = FileList["**/*.rdoc"]
   self.history_file     = "CHANGELOG.rdoc"
   self.readme_file      = "README.rdoc"
-  self.rubyforge_name   = 'libraggi'
 end
