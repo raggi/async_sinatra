@@ -1,10 +1,11 @@
 #!/usr/bin/env rake
 
 require 'hoe'
-Hoe.plugin :doofus, :git, :minitest, :gemspec2, :rubyforge
+Hoe.plugin :doofus, :git, :minitest, :gemspec2
 
 Hoe.spec 'async_sinatra' do
-  developer 'raggi', 'raggi@rubyforge.org'
+  developer 'raggi', 'jftucker@gmail.com'
+  license "MIT"
 
   extra_deps << %w[rack >=1.4.1]
   extra_deps << %w[sinatra >=1.3.2]

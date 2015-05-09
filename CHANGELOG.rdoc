@@ -1,3 +1,8 @@
+=== 1.2.0 / 2015-05-09
+
+* Added apatch, alink, aunlink for PATCH, LINK, UNLINK (thanks dalehamel)
+* Cleaned up build files, updated dev/test dependencies
+
 === 1.0.0 / 2012-02-20
 
 * Fixed basic usage of #params inside route blocks.
