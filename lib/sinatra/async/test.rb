@@ -46,6 +46,10 @@ class Sinatra::Async::Test
       @after_request.each { |hook| hook.call }
       @last_response
     end
+
+    def reset_last_response
+      @last_response = nil
+    end
   end
 
   module Methods
@@ -54,6 +58,7 @@ class Sinatra::Async::Test
     %w(get put post delete head options).each do |m|
       eval <<-RUBY, binding, __FILE__, __LINE__ + 1
       def a#{m}(*args)
+        rack_mock_session.reset_last_response
         #{m}(*args)
         assert_async
         async_continue

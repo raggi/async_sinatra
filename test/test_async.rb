@@ -282,4 +282,10 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
     assert_equal 'test', last_response.body
   end
 
+  def test_two_requests
+    aget '/hello'
+    assert last_response.ok?
+    aget '/302'
+    assert_equal 302, last_response.status
+  end
 end

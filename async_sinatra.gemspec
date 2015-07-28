@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rack>, [">= 1.4.1"])
       s.add_runtime_dependency(%q<sinatra>, [">= 1.3.2"])
+      s.add_development_dependency(%q<rack-test>, ["~> 0.6.3"])
       s.add_development_dependency(%q<minitest>, ["~> 5.6"])
       s.add_development_dependency(%q<rdoc>, ["~> 4.0"])
       s.add_development_dependency(%q<hoe-doofus>, [">= 1.0"])
