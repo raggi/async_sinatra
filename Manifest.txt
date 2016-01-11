@@ -7,5 +7,4 @@ examples/basic.ru
 lib/async_sinatra.rb
 lib/sinatra/async.rb
 lib/sinatra/async/test.rb
-test/gemloader.rb
 test/test_async.rb
