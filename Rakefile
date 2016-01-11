@@ -10,6 +10,7 @@ Hoe.spec 'async_sinatra' do
   extra_deps << %w[rack >=1.4.1]
   extra_deps << %w[sinatra >=1.3.2]
 
+  extra_dev_deps << %w(rack-test)
   extra_dev_deps << %w(hoe-doofus >=1.0)
   extra_dev_deps << %w(hoe-seattlerb >=1.2)
   extra_dev_deps << %w(hoe-git >=1.3)

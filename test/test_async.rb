@@ -1,4 +1,3 @@
-require 'gemloader'
 require 'minitest/autorun'
 
 require 'eventmachine'
