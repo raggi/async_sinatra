@@ -87,7 +87,7 @@ module Sinatra #:nodoc:
       # Send the given body or block as the final response to the asynchronous 
       # request.
       def body(value = nil)
-        if @async_running && (value || block_given?)
+        if @async_running
           if block_given?
             super { async_handle_exception { yield } }
           else
@@ -100,8 +100,8 @@ module Sinatra #:nodoc:
 
           # Taken from Base#call
           unless @response['Content-Type']
-            if Array === body and body[0].respond_to? :content_type
-              content_type body[0].content_type
+            if Array === response.body and response.body[0].respond_to? :content_type
+              content_type response.body[0].content_type
             else
               content_type :html
             end
@@ -114,7 +114,7 @@ module Sinatra #:nodoc:
           result[-1] = [] if request.head?
 
           request.env['async.callback'][ result ]
-          body
+          response.body
         else
           super
         end
@@ -187,8 +187,7 @@ module Sinatra #:nodoc:
       # the original call stack.
       def ahalt(*args)
         invoke { halt(*args) }
-        invoke { error_block! response.status }
-        body response.body
+        invoke { error_block! response.status } unless @env['sinatra.error']
       end
 
       # The given block will be executed if the user closes the connection

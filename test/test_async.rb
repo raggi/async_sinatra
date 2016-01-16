@@ -4,11 +4,34 @@ require 'eventmachine'
 
 require "sinatra/async/test"
 
+class CallbackCounter
+  @@count = 0
+
+  def self.count
+    @@count
+  end
+
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    callback = env['async.callback']
+    env['async.callback'] = lambda do |response|
+      @@count += 1
+      callback.call(response)
+    end
+    @app.call(env)
+  end
+end
+
 class TestSinatraAsync < MiniTest::Unit::TestCase
   include Sinatra::Async::Test::Methods
 
   class TestApp < Sinatra::Base
     set :environment, :test
+    set :call_count, 0
+
     register Sinatra::Async
 
     # Hack for storing some global data accessible in tests (normally you
@@ -93,7 +116,6 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
       body { 'other' }
     end
 
-    set :call_count, 0
     aget '/double_body_bug/:subdomain' do |subdomain|
       body { settings.call_count += 1; '' }
     end
@@ -110,6 +132,10 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
       async_schedule { body { aparams[:a] } }
     end
 
+    aget '/halt-with-body' do
+      async_schedule { ahalt 404, 'halted' }
+    end
+
     # Defeat the test environment semantics, ensuring we actually follow the
     # non-test branch of async_schedule. You would normally just call
     # async_schedule in user apps, and use test helpers appropriately.
@@ -123,7 +149,10 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
   end
 
   def app
-    TestApp.new
+    Rack::Builder.new do
+      use CallbackCounter
+      run TestApp.new
+    end.to_app
   end
 
   def assert_redirect(path)
@@ -286,5 +315,12 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
     assert last_response.ok?
     aget '/302'
     assert_equal 302, last_response.status
+  end
+
+  def test_bug_42_halt_with_body_should_only_call_callback_once
+    start = CallbackCounter.count
+    aget '/halt-with-body'
+    assert_equal 'halted', last_response.body
+    assert_equal start + 1, CallbackCounter.count
   end
 end
