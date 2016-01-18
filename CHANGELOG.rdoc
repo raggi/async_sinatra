@@ -1,6 +1,6 @@
 === 1.2.1 / 2016-01-16
 
-* Fix a bug where in ahalt, the async.callback was called twice (boxofbrad)
+* Fix a bug where in ahalt, the async.callback was called twice (boxofrad)
 * Improve testing support, allowing multiple requests (emschwar)
 
 === 1.2.0 / 2015-05-09
