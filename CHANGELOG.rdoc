@@ -1,3 +1,7 @@
+=== 1.3.0 / 2017-05-22
+
+* Added patch method (emschwar)
+
 === 1.2.1 / 2016-01-16
 
 * Fix a bug where in ahalt, the async.callback was called twice (boxofrad)
