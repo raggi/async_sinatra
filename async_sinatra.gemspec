@@ -2,62 +2,62 @@
 # stub: async_sinatra 1.2.1 ruby lib
 
 Gem::Specification.new do |s|
-  s.name = "async_sinatra"
+  s.name = "async_sinatra".freeze
   s.version = "1.2.1"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.require_paths = ["lib"]
-  s.authors = ["raggi"]
-  s.date = "2016-01-16"
-  s.description = "A Sinatra plugin to provide convenience whilst performing asynchronous\nresponses inside of the Sinatra framework running under async webservers.\n\nTo properly utilise this package, some knowledge of EventMachine and/or\nasynchronous patterns is recommended.\n\nCurrently, supporting servers include:\n\n* Thin\n* Rainbows\n* Zbatery"
-  s.email = ["jftucker@gmail.com"]
-  s.extra_rdoc_files = ["CHANGELOG.rdoc", "Manifest.txt", "README.rdoc", "CHANGELOG.rdoc", "README.rdoc"]
-  s.files = [".gemtest", "CHANGELOG.rdoc", "Manifest.txt", "README.rdoc", "Rakefile", "examples/basic.ru", "lib/async_sinatra.rb", "lib/sinatra/async.rb", "lib/sinatra/async/test.rb", "test/test_async.rb"]
-  s.homepage = "http://github.com/raggi/async_sinatra"
-  s.licenses = ["MIT"]
-  s.rdoc_options = ["--main", "README.rdoc"]
-  s.rubygems_version = "2.5.1"
-  s.summary = "A Sinatra plugin to provide convenience whilst performing asynchronous responses inside of the Sinatra framework running under async webservers"
+  s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
+  s.require_paths = ["lib".freeze]
+  s.authors = ["raggi".freeze]
+  s.date = "2017-05-22"
+  s.description = "A Sinatra plugin to provide convenience whilst performing asynchronous\nresponses inside of the Sinatra framework running under async webservers.\n\nTo properly utilise this package, some knowledge of EventMachine and/or\nasynchronous patterns is recommended.\n\nCurrently, supporting servers include:\n\n* Thin\n* Rainbows\n* Zbatery".freeze
+  s.email = ["jftucker@gmail.com".freeze]
+  s.extra_rdoc_files = ["CHANGELOG.rdoc".freeze, "Manifest.txt".freeze, "README.rdoc".freeze, "CHANGELOG.rdoc".freeze, "README.rdoc".freeze]
+  s.files = [".gemtest".freeze, "CHANGELOG.rdoc".freeze, "Manifest.txt".freeze, "README.rdoc".freeze, "Rakefile".freeze, "examples/basic.ru".freeze, "lib/async_sinatra.rb".freeze, "lib/sinatra/async.rb".freeze, "lib/sinatra/async/test.rb".freeze, "test/test_async.rb".freeze]
+  s.homepage = "http://github.com/raggi/async_sinatra".freeze
+  s.licenses = ["MIT".freeze]
+  s.rdoc_options = ["--main".freeze, "README.rdoc".freeze]
+  s.rubygems_version = "2.6.11".freeze
+  s.summary = "A Sinatra plugin to provide convenience whilst performing asynchronous responses inside of the Sinatra framework running under async webservers".freeze
 
   if s.respond_to? :specification_version then
     s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<rack>, [">= 1.4.1"])
-      s.add_runtime_dependency(%q<sinatra>, [">= 1.3.2"])
-      s.add_development_dependency(%q<minitest>, ["~> 5.8"])
-      s.add_development_dependency(%q<rdoc>, ["~> 4.0"])
-      s.add_development_dependency(%q<rack-test>, [">= 0"])
-      s.add_development_dependency(%q<hoe-doofus>, [">= 1.0"])
-      s.add_development_dependency(%q<hoe-seattlerb>, [">= 1.2"])
-      s.add_development_dependency(%q<hoe-git>, [">= 1.3"])
-      s.add_development_dependency(%q<hoe-gemspec2>, [">= 1.0"])
-      s.add_development_dependency(%q<eventmachine>, [">= 0.12.11"])
-      s.add_development_dependency(%q<hoe>, ["~> 3.14"])
+      s.add_runtime_dependency(%q<rack>.freeze, [">= 2.0.0"])
+      s.add_runtime_dependency(%q<sinatra>.freeze, [">= 1.4.8"])
+      s.add_development_dependency(%q<minitest>.freeze, ["~> 5.10"])
+      s.add_development_dependency(%q<rack-test>.freeze, [">= 0"])
+      s.add_development_dependency(%q<hoe-doofus>.freeze, [">= 1.0"])
+      s.add_development_dependency(%q<hoe-seattlerb>.freeze, [">= 1.2"])
+      s.add_development_dependency(%q<hoe-git>.freeze, [">= 1.3"])
+      s.add_development_dependency(%q<hoe-gemspec2>.freeze, [">= 1.0"])
+      s.add_development_dependency(%q<rdoc>.freeze, [">= 0"])
+      s.add_development_dependency(%q<eventmachine>.freeze, [">= 0.12.11"])
+      s.add_development_dependency(%q<hoe>.freeze, ["~> 3.16"])
     else
-      s.add_dependency(%q<rack>, [">= 1.4.1"])
-      s.add_dependency(%q<sinatra>, [">= 1.3.2"])
-      s.add_dependency(%q<minitest>, ["~> 5.8"])
-      s.add_dependency(%q<rdoc>, ["~> 4.0"])
-      s.add_dependency(%q<rack-test>, [">= 0"])
-      s.add_dependency(%q<hoe-doofus>, [">= 1.0"])
-      s.add_dependency(%q<hoe-seattlerb>, [">= 1.2"])
-      s.add_dependency(%q<hoe-git>, [">= 1.3"])
-      s.add_dependency(%q<hoe-gemspec2>, [">= 1.0"])
-      s.add_dependency(%q<eventmachine>, [">= 0.12.11"])
-      s.add_dependency(%q<hoe>, ["~> 3.14"])
+      s.add_dependency(%q<rack>.freeze, [">= 2.0.0"])
+      s.add_dependency(%q<sinatra>.freeze, [">= 1.4.8"])
+      s.add_dependency(%q<minitest>.freeze, ["~> 5.10"])
+      s.add_dependency(%q<rack-test>.freeze, [">= 0"])
+      s.add_dependency(%q<hoe-doofus>.freeze, [">= 1.0"])
+      s.add_dependency(%q<hoe-seattlerb>.freeze, [">= 1.2"])
+      s.add_dependency(%q<hoe-git>.freeze, [">= 1.3"])
+      s.add_dependency(%q<hoe-gemspec2>.freeze, [">= 1.0"])
+      s.add_dependency(%q<rdoc>.freeze, [">= 0"])
+      s.add_dependency(%q<eventmachine>.freeze, [">= 0.12.11"])
+      s.add_dependency(%q<hoe>.freeze, ["~> 3.16"])
     end
   else
-    s.add_dependency(%q<rack>, [">= 1.4.1"])
-    s.add_dependency(%q<sinatra>, [">= 1.3.2"])
-    s.add_dependency(%q<minitest>, ["~> 5.8"])
-    s.add_dependency(%q<rdoc>, ["~> 4.0"])
-    s.add_dependency(%q<rack-test>, [">= 0"])
-    s.add_dependency(%q<hoe-doofus>, [">= 1.0"])
-    s.add_dependency(%q<hoe-seattlerb>, [">= 1.2"])
-    s.add_dependency(%q<hoe-git>, [">= 1.3"])
-    s.add_dependency(%q<hoe-gemspec2>, [">= 1.0"])
-    s.add_dependency(%q<eventmachine>, [">= 0.12.11"])
-    s.add_dependency(%q<hoe>, ["~> 3.14"])
+    s.add_dependency(%q<rack>.freeze, [">= 2.0.0"])
+    s.add_dependency(%q<sinatra>.freeze, [">= 1.4.8"])
+    s.add_dependency(%q<minitest>.freeze, ["~> 5.10"])
+    s.add_dependency(%q<rack-test>.freeze, [">= 0"])
+    s.add_dependency(%q<hoe-doofus>.freeze, [">= 1.0"])
+    s.add_dependency(%q<hoe-seattlerb>.freeze, [">= 1.2"])
+    s.add_dependency(%q<hoe-git>.freeze, [">= 1.3"])
+    s.add_dependency(%q<hoe-gemspec2>.freeze, [">= 1.0"])
+    s.add_dependency(%q<rdoc>.freeze, [">= 0"])
+    s.add_dependency(%q<eventmachine>.freeze, [">= 0.12.11"])
+    s.add_dependency(%q<hoe>.freeze, ["~> 3.16"])
   end
 end
