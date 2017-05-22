@@ -7,8 +7,8 @@ Hoe.spec 'async_sinatra' do
   developer 'raggi', 'jftucker@gmail.com'
   license "MIT"
 
-  extra_deps << %w[rack >=1.4.1]
-  extra_deps << %w[sinatra >=1.3.2]
+  extra_deps << %w[rack >=2.0.0]
+  extra_deps << %w[sinatra >=1.4.8]
 
   extra_dev_deps << %w(rack-test)
   extra_dev_deps << %w(hoe-doofus >=1.0)
