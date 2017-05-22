@@ -55,7 +55,7 @@ class Sinatra::Async::Test
   module Methods
     include Rack::Test::Methods
 
-    %w(get put post delete head options).each do |m|
+    %w(get put post delete head options patch).each do |m|
       eval <<-RUBY, binding, __FILE__, __LINE__ + 1
       def a#{m}(*args)
         rack_mock_session.reset_last_response
