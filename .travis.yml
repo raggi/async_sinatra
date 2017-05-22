@@ -19,3 +19,5 @@ matrix:
     - env: tilt=master
     - rvm: ruby-head
     - rvm: jruby-head
+      # For now, it seems jruby can't gem install rack:
+    - rvm: jruby
