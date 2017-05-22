@@ -136,6 +136,10 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
       async_schedule { ahalt 404, 'halted' }
     end
 
+    apatch '/patch' do
+      body { "apatch #{request.body.read}" }
+    end
+
     # Defeat the test environment semantics, ensuring we actually follow the
     # non-test branch of async_schedule. You would normally just call
     # async_schedule in user apps, and use test helpers appropriately.
@@ -322,5 +326,11 @@ class TestSinatraAsync < MiniTest::Unit::TestCase
     aget '/halt-with-body'
     assert_equal 'halted', last_response.body
     assert_equal start + 1, CallbackCounter.count
+  end
+
+  def test_apatch
+    apatch "/patch", "body for apatch", { "CONTENT_TYPE" => "text/plain" }
+    assert_equal 200, last_response.status
+    assert_equal "apatch body for apatch", last_response.body
   end
 end
