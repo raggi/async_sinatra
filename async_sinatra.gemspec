@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
-# stub: async_sinatra 1.2.1 ruby lib
+# stub: async_sinatra 1.3.0 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "async_sinatra".freeze
-  s.version = "1.2.1"
+  s.version = "1.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["raggi".freeze]
-  s.date = "2017-05-22"
+  s.date = "2017-05-23"
   s.description = "A Sinatra plugin to provide convenience whilst performing asynchronous\nresponses inside of the Sinatra framework running under async webservers.\n\nTo properly utilise this package, some knowledge of EventMachine and/or\nasynchronous patterns is recommended.\n\nCurrently, supporting servers include:\n\n* Thin\n* Rainbows\n* Zbatery".freeze
   s.email = ["jftucker@gmail.com".freeze]
   s.extra_rdoc_files = ["CHANGELOG.rdoc".freeze, "Manifest.txt".freeze, "README.rdoc".freeze, "CHANGELOG.rdoc".freeze, "README.rdoc".freeze]
